@@ -64,7 +64,6 @@
 </head>
 
 <body id="themeBody" class="container py-4 dark-mode">
-
   <!-- 🌗 Toggle Button -->
   <div class="toggle-btn">
     <button class="btn btn-outline-light btn-sm" onclick="toggleTheme()">🌓 Toggle Theme</button>
@@ -72,51 +71,50 @@
 
   <h1 class="text-center mb-4">🔬 Breast Cancer Diagnosis Dashboard</h1>
 
-    <form method="POST" enctype="multipart/form-data" class="row g-2 mb-3">
-        <div class="col-md-5">
-            <input type="file" name="file" class="form-control" required>
-        </div>
-        <div class="col-md-4">
-            <input type="number" name="patient_id"  class="form-control" placeholder="🔎 Optional: Enter Patient ID">
-        </div>
-        <div class="col-md-3 d-grid">
-            <button type="submit" class="btn btn-success">Analyze</button>
-        </div>
-    </form>
-
-    {% if result_text %}
-        <div class="alert alert-info text-center fs-5 mt-2">
-            <strong>Patient Prediction:</strong> {{ result_text }}
-        </div>
-    {% endif %}
-
-  </form>
-    <!-- 📘 Project Notes Section -->
-    <div class="graph-card mb-4">
-    <h3 class="graph-title" style="font-size: 1.6rem;">💡 HOW IT HELPS YOU!!</h3>
-    <p class="graph-caption" style="font-size: 1.05rem;">Understand the purpose and usage of this Breast Cancer Diagnosis Dashboard:</p>
-    <ul class="small" style="font-size: 1.05rem; line-height: 1.7;">
-        <li><strong>🔍 Purpose:</strong> This tool helps in predicting whether a tumor is <span class="text-success">Benign</span> or <span class="text-danger">Malignant</span> using a logistic regression model trained on breast cancer data.</li>
-        <li><strong>👩‍⚕️ Who Can Use:</strong> Medical students, data analysts, healthcare researchers, or anyone exploring machine learning for healthcare.</li>
-        <li><strong>📂 Required Data Format:</strong> CSV file with the <code>diagnosis</code> column (M for malignant, B for benign), along with numerical features like radius, texture, area, smoothness, etc.</li>
-        <li><strong>📈 What It Does:</strong> Performs classification, shows ROC curve, sigmoid, confusion matrix, class distribution, correlation, and top 10 feature importances — with live visuals.</li>
-        <li><strong>📌 Rules for Upload:</strong>
-        <ul>
-            <li>Make sure your file is in <code>.csv</code> format</li>
-            <li>It must include a <code>diagnosis</code> column</li>
-            <li>Remove missing values before uploading</li>
-        </ul>
-        </li>
-        <li><strong>📤 Output:</strong> Easy-to-understand metrics + visuals + data preview</li>
-        <li><strong>🌓 Bonus:</strong> You can toggle between dark and light mode anytime</li>
-    </ul>
-    </div>
+  <!-- CSV Upload Form -->
+  <form method="POST" enctype="multipart/form-data" class="row g-2 mb-4">
+  <div class="col-md-6">
+    <input type="file" name="file" class="form-control" placeholder="Upload CSV File">
+  </div>
+  <div class="col-md-4">
+    <input type="text" name="patient_id" placeholder="🔍 Search by Patient ID" class="form-control">
+  </div>
+  <div class="col-md-2 d-grid">
+    <button type="submit" class="btn btn-success">Analyze</button>
+  </div>
+</form>
 
 
+  <!-- Result Message -->
+  {% if result_text %}
+    <div class="alert alert-info text-center fw-bold">{{ result_text }}</div>
+  {% endif %}
 
+  <!-- Error Message -->
   {% if error %}
     <div class="alert alert-danger text-center">{{ error }}</div>
   {% endif %}
+
+  <!-- 📘 Project Info -->
+  <div class="graph-card mb-4">
+    <h3 class="graph-title" style="font-size: 1.6rem;">💡 HOW IT HELPS YOU!!</h3>
+    <p class="graph-caption" style="font-size: 1.05rem;">Understand the purpose and usage of this Breast Cancer Diagnosis Dashboard:</p>
+    <ul class="small" style="font-size: 1.05rem; line-height: 1.7;">
+      <li><strong>🔍 Purpose:</strong> This tool helps in predicting whether a tumor is <span class="text-success">Benign</span> or <span class="text-danger">Malignant</span>.</li>
+      <li><strong>👩‍⚕️ Who Can Use:</strong> Medical students, data analysts, healthcare researchers, etc.</li>
+      <li><strong>📂 Required Data Format:</strong> CSV with <code>diagnosis</code> (M = malignant, B = benign) and numeric features.</li>
+      <li><strong>📊 What It Does:</strong> Shows classification results, ROC curve, sigmoid, confusion matrix, etc.</li>
+      <li><strong>📌 Upload Rules:</strong>
+        <ul>
+          <li>CSV only</li>
+          <li>Must include <code>diagnosis</code> column</li>
+          <li>Remove missing/null values</li>
+        </ul>
+      </li>
+      <li><strong>📤 Output:</strong> Visuals + metrics + patient ID prediction</li>
+      <li><strong>🌓 Bonus:</strong> Dark/Light mode toggle</li>
+    </ul>
+  </div>
 
   {% if report %}
     <h3 class="text-center">📄 Model Classification Report</h3>
@@ -129,44 +127,36 @@
       <div class="col-md-6">
         <div class="graph-card">
           <div class="graph-title">📊 ROC Curve (AUC = {{ roc_auc_val }})</div>
-          <p class="graph-caption">High AUC indicates good performance.</p>
           <img src="data:image/png;base64,{{ image_roc }}" class="img-fluid" />
         </div>
       </div>
       <div class="col-md-6">
         <div class="graph-card">
           <div class="graph-title">📈 Sigmoid Function</div>
-          <p class="graph-caption">Logistic regression activation function mapping values between 0 and 1.</p>
           <img src="data:image/png;base64,{{ image_sigmoid }}" class="img-fluid" />
         </div>
       </div>
-
       <div class="col-md-6">
         <div class="graph-card">
           <div class="graph-title">🧪 Class Distribution</div>
-          <p class="graph-caption">Shows balance of malignant and benign cases in dataset.</p>
           <img src="data:image/png;base64,{{ image_class_dist }}" class="img-fluid" />
         </div>
       </div>
       <div class="col-md-6">
         <div class="graph-card">
           <div class="graph-title">📊 Correlation Heatmap</div>
-          <p class="graph-caption">Visual correlation between features.</p>
           <img src="data:image/png;base64,{{ image_corr }}" class="img-fluid" />
         </div>
       </div>
-
       <div class="col-md-6">
         <div class="graph-card">
           <div class="graph-title">💡 Top 10 Feature Importances</div>
-          <p class="graph-caption">Which features most affect predictions.</p>
           <img src="data:image/png;base64,{{ image_feat }}" class="img-fluid" />
         </div>
       </div>
       <div class="col-md-6">
         <div class="graph-card">
           <div class="graph-title">🧾 Confusion Matrix</div>
-          <p class="graph-caption">Shows true/false positives and negatives.</p>
           <img src="data:image/png;base64,{{ image_cm }}" class="img-fluid" />
         </div>
       </div>
@@ -174,21 +164,12 @@
 
     <div class="graph-card mt-4">
       <h4 class="graph-title">📋 Sample Data Preview</h4>
-      <p class="graph-caption">First 5 rows of uploaded CSV file.</p>
       <div class="table-responsive">
         {{ table_html | safe }}
       </div>
     </div>
   {% endif %}
-    {% if patient_prediction %}
-    <div class="alert alert-info text-center">
-     🧬 <strong>Prediction for Patient ID {{ request.form.patient_id }}:</strong>
-     <span class="fw-bold">{{ patient_prediction }}</span>
-    </div>
-    {% endif %}
 
-
-  <!-- Theme Toggle Script -->
   <script>
     function toggleTheme() {
       const body = document.getElementById("themeBody");
@@ -197,7 +178,6 @@
       body.classList.toggle("light-mode", isDark);
       localStorage.setItem("theme", isDark ? "light-mode" : "dark-mode");
     }
-
     window.onload = () => {
       const saved = localStorage.getItem("theme");
       const body = document.getElementById("themeBody");
